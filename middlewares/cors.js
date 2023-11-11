@@ -3,8 +3,8 @@ const allowedCors = [
   'http://localhost:3001',
   'https://localhost:3001',
   'http://localhost:3000',
-  'http://mestof.schizovi.students.nomoredomainsrocks.ru',
-  'https://mestof.schizovi.students.nomoredomainsrocks.ru',
+  'http://schizovi.diplom.nomoredomainsmonster.ru',
+  'https://schizovi.diplom.nomoredomainsmonster.ru',
 ];
 
 module.exports = (req, res, next) => {
