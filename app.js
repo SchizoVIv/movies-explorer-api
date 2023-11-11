@@ -9,7 +9,7 @@ const { requestLogger, errorLogger } = require('./middlewares/logger');
 const handleErrors = require('./utils/handleErrors');
 const router = require('./routes');
 
-const { PORT = 3001, MY_DB = 'mongodb://127.0.0.1:27017/diploma69' } = process.env;
+const { PORT = 3001, MY_DB = 'mongodb://84.252.128.47/diploma69' } = process.env;
 
 const app = express();
 app.use(cors);
