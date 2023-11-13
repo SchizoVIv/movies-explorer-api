@@ -15,9 +15,9 @@ const {
 
 const UserModel = require('../models/user');
 
-const NotFoundError = require('../errors/NotFoundError');
-const BadRequestError = require('../errors/BadRequestError');
-const UnauthorizedError = require('../errors/UnauthorizedError');
+const {NotFoundError} = require('../errors/NotFoundError');
+const {BadRequestError} = require('../errors/BadRequestError');
+const {UnauthorizedError} = require('../errors/UnauthorizedError');
 
 const SOLT_ROUNDS = 10;
 
