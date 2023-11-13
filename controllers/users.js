@@ -1,40 +1,33 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const {
+  ERR_TEXT_BAD_PROFILE,
+  ERR_TEXT_NOTFOUND,
+  ERR_TEXT_BAD_CREDENTIALS,
+  ERR_TEXT_NO_CREDENTIALS,
+  ERR_TEXT_NO_USER,
+  ERR_TEXT_BAD_LOGIN,
+  ERR_TEXT_BAD_OUT,
+  STATUS_CREATED,
+  STATUS_OK,
+  TEXT_OUT,
+} = require('../utils/constants');
 
 const UserModel = require('../models/user');
-const {
-  UnauthorizedError,
-  BadRequestError,
-  NotFoundError,
-} = require('../utils/errors');
+
+const NotFoundError = require('../errors/NotFoundError');
+const BadRequestError = require('../errors/BadRequestError');
+const UnauthorizedError = require('../errors/UnauthorizedError');
 
 const SOLT_ROUNDS = 10;
-
-// const getUsers = (req, res, next) => {
-//   UserModel.find()
-//     .then((users) => res.status(200).send(users))
-//     .catch((err) => next(err));
-// };
-
-// const getUserById = (req, res, next) => {
-//   UserModel.findById(req.params.id)
-//     .then((user) => {
-//       if (user === null) throw new NotFoundError('Пользователь с таким id не найден');
-
-//       return res.status(200).send(user);
-//     })
-//     .catch((err) => {
-//       next(err);
-//     });
-// };
 
 const getUser = (req, res, next) => {
   const userId = req.user._id;
   UserModel.findById(userId)
     .then((user) => {
-      if (user === null) throw new NotFoundError('Cписок пользователей пуст');
+      if (user === null) throw new NotFoundError(ERR_TEXT_NOTFOUND);
 
-      return res.status(200).send({ user });
+      return res.status(STATUS_OK).send({ user });
     })
     .catch((err) => next(err));
 };
@@ -45,18 +38,18 @@ const updateUserInfo = (req, res, next) => {
     .orFail()
     .then((user) => {
       if (user) {
-        return res.status(200).send({
+        return res.status(STATUS_OK).send({
           name: user.name,
           email: user.email,
           _id: user._id,
         });
       }
 
-      throw new NotFoundError('Пользователь с таким id не найден');
+      throw new NotFoundError(ERR_TEXT_NOTFOUND);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new BadRequestError('Переданы некорректные данные при обновлении профиля'));
+        next(new BadRequestError(ERR_TEXT_BAD_PROFILE));
       } else {
         next(err);
       }
@@ -67,14 +60,14 @@ const createUser = async (req, res, next) => {
   const { name, email, password } = req.body;
   try {
     if (!email || !password || !name) {
-      throw new BadRequestError('Переданы некорректные данные при регистрации пользователя');
+      throw new BadRequestError(ERR_TEXT_BAD_CREDENTIALS);
     }
 
     const hash = await bcrypt.hash(password, SOLT_ROUNDS);
 
     const user = await UserModel.create({ name, email, password: hash });
 
-    res.status(201).json({ name: user.name, email: user.email, _id: user._id});
+    res.status(STATUS_CREATED).json({ name: user.name, email: user.email, _id: user._id});
   } catch (err) {
     next(err);
   }
@@ -85,19 +78,19 @@ const login = async (req, res, next) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      throw new BadRequestError('Не указан логин или пароль');
+      throw new BadRequestError(ERR_TEXT_NO_CREDENTIALS);
     }
 
     const user = await UserModel.findOne({ email }).select('+password');
 
     if (!user) {
-      throw new UnauthorizedError('Такого пользователя не существует');
+      throw new UnauthorizedError(ERR_TEXT_NO_USER);
     }
 
     const isValid = await bcrypt.compare(password, user.password);
 
     if (!isValid) {
-      throw new UnauthorizedError('Неверный логин или пароль');
+      throw new UnauthorizedError(ERR_TEXT_BAD_LOGIN);
     }
 
     const payload = { _id: user._id, email: user.email };
@@ -110,7 +103,7 @@ const login = async (req, res, next) => {
       sameSite: true,
     });
 
-    res.status(200).send({ token });
+    res.status(STATUS_OK).send({ token });
   } catch (err) {
     next(err);
   }
@@ -119,10 +112,10 @@ const login = async (req, res, next) => {
 const logout = async (req, res) => {
   if (res.cookie) {
     await res.clearCookie('jwt');
-    res.status(200).send({ message: 'Вы вышли из своего аккаунта' });
+    res.status(STATUS_OK).send({ message: TEXT_OUT });
   }
   if (!res.cookie) {
-    throw new BadRequestError('Неверные данные авторизации');
+    throw new BadRequestError(ERR_TEXT_BAD_OUT);
   }
 };
 

@@ -1,18 +1,26 @@
 const validator = require('validator');
 const MovieModel = require('../models/movie');
-
 const {
-  ForbiddenError,
-  BadRequestError,
-  NotFoundError,
-} = require('../utils/errors');
+  ERR_TEXT_BAD_CREATE_MOVIE,
+  ERR_TEXT_BAD_DEL_MOVIE,
+  ERR_TEXT_NO_MOVIE,
+  ERR_TEXT_ELSE_MOVIE,
+  STATUS_CREATED,
+  STATUS_OK,
+  TEXT_DELETE,
+  TEXT_GET_MOVIE,
+} = require('../utils/constants');
+
+const NotFoundError = require('../errors/NotFoundError');
+const BadRequestError = require('../errors/BadRequestError');
+const ForbiddenError = require('../errors/UnauthorizedError');
 
 const getMovies = async (req, res, next) => {
   try {
     const movies = await MovieModel.find({ owner: req.user._id });
-    res.status(200).send({
+    res.status(STATUS_OK).send({
       movies,
-      message: `Список сохраненных фильмов: ${movies.length}`,
+      message: `${TEXT_GET_MOVIE} ${movies.length}`,
     });
   } catch (err) {
     next(err);
@@ -50,10 +58,10 @@ const addMovie = (req, res, next) => {
     nameEN,
     owner,
   })
-    .then((movie) => res.status(201).send(movie))
+    .then((movie) => res.status(STATUS_CREATED).send(movie))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new BadRequestError('Переданы некорректные данные при создании фильма'));
+        next(new BadRequestError(ERR_TEXT_BAD_CREATE_MOVIE));
       } else {
         next(err);
       }
@@ -63,28 +71,28 @@ const addMovie = (req, res, next) => {
 const deleteMovieById = async (req, res, next) => {
   try {
     if (!validator.isMongoId(req.params.id)) {
-      throw new BadRequestError('Переданы некорректные данные при удалении фильма');
+      throw new BadRequestError(ERR_TEXT_BAD_DEL_MOVIE);
     }
 
     const movie = await MovieModel.findById(req.params.id);
 
     if (movie == null || !movie) {
-      throw new NotFoundError('Фильма с таким ID не найдено');
+      throw new NotFoundError(ERR_TEXT_NO_MOVIE);
     }
 
     if (req.user._id !== movie.owner) {
-      throw new ForbiddenError('Удаление чужих фильмов - запрещено');
+      throw new ForbiddenError(ERR_TEXT_ELSE_MOVIE);
     }
 
     await movie.deleteOne({});
 
-    res.status(200).send({
+    res.status(STATUS_OK).send({
       _id: movie._id,
-      message: 'Фильм удален из избранного',
+      message: TEXT_DELETE,
     });
   } catch (err) {
     if (err.name === 'CastError') {
-      next(new BadRequestError('Фильма с таким ID не найдено'));
+      next(new BadRequestError(ERR_TEXT_NO_MOVIE));
     } else {
       next(err);
     }
