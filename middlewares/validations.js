@@ -1,5 +1,8 @@
-const URI_PATTERN = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/i;
 const { celebrate, Joi } = require('celebrate');
+const {
+  MONGO_PATTERN,
+  URI_PATTERN,
+} = require('../utils/constants');
 
 const signinValidation = celebrate({
   body: Joi.object().keys({
@@ -25,7 +28,9 @@ const updateUserValidation = celebrate({
 
 const idValidation = celebrate({
   params: Joi.object().keys({
-    id: Joi.string().required().pattern(new RegExp('^[0-9a-fA-F]{24}$')),
+    id: Joi.string().pattern(MONGO_PATTERN).messages({
+      'string.pattern.base': 'Поле {#label} должен быть в формате MongoId.',
+    }),
   }),
 });
 

@@ -28,6 +28,11 @@ const ERR_TEXT_ELSE_MOVIE = 'Удаление чужих фильмов - зап
 const ERR_TEXT_NO_AUTH = 'Вы не авторизированы';
 const ERR_TEXT_NO_TOKEN = 'Токен отсутствует';
 
+const MONGO_PATTERN = /^[0-9a-fA-F]{24}$/;
+const URI_PATTERN = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/i;
+
+const SOLT_ROUNDS = 10;
+
 module.exports = {
   STATUS_CREATED,
   STATUS_OK,
@@ -54,4 +59,7 @@ module.exports = {
   ERR_TEXT_ELSE_MOVIE,
   ERR_TEXT_NO_AUTH,
   ERR_TEXT_NO_TOKEN,
+  MONGO_PATTERN,
+  URI_PATTERN,
+  SOLT_ROUNDS,
 };

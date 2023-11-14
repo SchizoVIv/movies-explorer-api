@@ -11,15 +11,15 @@ const {
   STATUS_CREATED,
   STATUS_OK,
   TEXT_OUT,
+  SOLT_ROUNDS,
 } = require('../utils/constants');
 
 const UserModel = require('../models/user');
 
-const {NotFoundError} = require('../errors/NotFoundError');
-const {BadRequestError} = require('../errors/BadRequestError');
-const {UnauthorizedError} = require('../errors/UnauthorizedError');
+const { NotFoundError } = require('../errors/NotFoundError');
+const { BadRequestError } = require('../errors/BadRequestError');
+const { UnauthorizedError } = require('../errors/UnauthorizedError');
 
-const SOLT_ROUNDS = 10;
 
 const getUser = (req, res, next) => {
   const userId = req.user._id;
@@ -67,7 +67,7 @@ const createUser = async (req, res, next) => {
 
     const user = await UserModel.create({ name, email, password: hash });
 
-    res.status(STATUS_CREATED).json({ name: user.name, email: user.email, _id: user._id});
+    res.status(STATUS_CREATED).json({ name: user.name, email: user.email, _id: user._id });
   } catch (err) {
     next(err);
   }

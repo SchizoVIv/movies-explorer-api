@@ -11,9 +11,9 @@ const {
   TEXT_GET_MOVIE,
 } = require('../utils/constants');
 
-const {NotFoundError} = require('../errors/NotFoundError');
-const {BadRequestError} = require('../errors/BadRequestError');
-const {ForbiddenError} = require('../errors/UnauthorizedError');
+const { NotFoundError } = require('../errors/NotFoundError');
+const { BadRequestError } = require('../errors/BadRequestError');
+const { ForbiddenError } = require('../errors/UnauthorizedError');
 
 const getMovies = async (req, res, next) => {
   try {
