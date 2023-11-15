@@ -27,6 +27,7 @@ const ERR_TEXT_NO_MOVIE = 'Фильма с таким ID не найдено';
 const ERR_TEXT_ELSE_MOVIE = 'Удаление чужих фильмов - запрещено';
 const ERR_TEXT_NO_AUTH = 'Вы не авторизированы';
 const ERR_TEXT_NO_TOKEN = 'Токен отсутствует';
+const ERR_TEXT_CONFLICT_EMAIL = 'Пользователь с таким электронным адресом уже существует';
 
 const MONGO_PATTERN = /^[0-9a-fA-F]{24}$/;
 const URI_PATTERN = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/i;
@@ -62,4 +63,5 @@ module.exports = {
   MONGO_PATTERN,
   URI_PATTERN,
   SOLT_ROUNDS,
+  ERR_TEXT_CONFLICT_EMAIL,
 };

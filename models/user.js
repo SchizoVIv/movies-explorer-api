@@ -5,6 +5,7 @@ const userSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
+    unique: true,
     validate: {
       validator: (v) => validator.isEmail(v),
       message: 'Некорректный Email',
@@ -17,10 +18,9 @@ const userSchema = new mongoose.Schema({
   },
   name: {
     type: String,
-    required: false,
+    required: true,
     minlength: 2,
     maxlength: 30,
-    default: 'Влада',
   },
 }, { versionKey: false });
 

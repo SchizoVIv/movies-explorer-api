@@ -12,6 +12,7 @@ const {
   STATUS_OK,
   TEXT_OUT,
   SOLT_ROUNDS,
+  ERR_TEXT_CONFLICT_EMAIL,
 } = require('../utils/constants');
 
 const UserModel = require('../models/user');
@@ -19,7 +20,7 @@ const UserModel = require('../models/user');
 const { NotFoundError } = require('../errors/NotFoundError');
 const { BadRequestError } = require('../errors/BadRequestError');
 const { UnauthorizedError } = require('../errors/UnauthorizedError');
-
+const { ConflictError } = require('../errors/ConflictError');
 
 const getUser = (req, res, next) => {
   const userId = req.user._id;
@@ -69,7 +70,11 @@ const createUser = async (req, res, next) => {
 
     res.status(STATUS_CREATED).json({ name: user.name, email: user.email, _id: user._id });
   } catch (err) {
-    next(err);
+    if (err.code === 11000) {
+      next(new ConflictError(ERR_TEXT_CONFLICT_EMAIL));
+    } else {
+      next(err);
+    }
   }
 };
 

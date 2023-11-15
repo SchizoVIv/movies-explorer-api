@@ -13,7 +13,7 @@ const {
 
 const { NotFoundError } = require('../errors/NotFoundError');
 const { BadRequestError } = require('../errors/BadRequestError');
-const { ForbiddenError } = require('../errors/UnauthorizedError');
+const { ForbiddenError } = require('../errors/ForbiddenError');
 
 const getMovies = async (req, res, next) => {
   try {

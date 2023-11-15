@@ -8,6 +8,6 @@ const { error404 } = require('../errors/NotFoundError');
 router.use('/users', auth, usersRouter);
 router.use('/movies', auth, moviesRouter);
 router.use('/', authsRouter);
-router.use('/*', error404);
+router.use('/*', auth, error404);
 
 module.exports = router;
